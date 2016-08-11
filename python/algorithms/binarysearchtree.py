@@ -129,33 +129,26 @@ def predecessor(node):
 def delete_node(tree, node):
 
     #pdb.set_trace()
-    def correctly_setup_children(node, value):
-        if node == node.parent.left:
-            node.parent.left = value 
+    def correctly_setup_children(node1, node2):
+        """ Replaces the node1 with node2 depending 
+        on the the position of node 1.
+        """
+        if node1 == node1.parent.left:
+            node1.parent.left = node2 
         else:
-            node.parent.right = value
+            node1.parent.right = node2
 
     # Case: If node has no children, then simply
     # update the parent
     if node.left is None and node.right is None:
-        if node == node.parent.left:
-            node.parent.left = None
-        else:
-            node.parent.right = None
-
+        correctly_setup_children(node, None)
+        
     #Case: If node has only one child, make it replace
     # the node
     if (node.left is None and node.right is not None):
-        if node == node.parent.left:
-            node.parent.left = node.right
-        else:
-            node.parent.right = node.right
-            
+        correctly_setup_children(node, node.right) 
     elif node.right is None and node.left is not None:
-        if node == node.parent.left:
-            node.parent.left = node.left
-        else:
-            node.parent.right = node.left
+        correctly_setup_children(node, node.left)
 
     # Case: If node has 2 children, then find the successor,
     # which will be in the right tree (because it cannot be in the
@@ -169,28 +162,17 @@ def delete_node(tree, node):
 
     if nxt == node.right:
         nxt.parent = node.parent
-        if node == node.parent.left:
-            node.parent.left = nxt
-        else:
-            node.parent.right = nxt
+        correctly_setup_children(node, nxt)
 
     # Case b. Successor is not an exact child of the node, but lives
     # a few levels down in the tree.
     # Replace successor by its own right child, and replace z by successor.
     else:
-        if nxt == nxt.parent.left:
-            nxt.parent.left = nxt.right
-        else:
-            nxt.parent.right = nxt.right
-
+        correctly_setup_children(nxt, nxt.right)
         nxt.right = node.right
         nxt.left = node.left
         nxt.parent = node.parent
-
-        if node == node.parent.left:
-            node.parent.left = nxt
-        else:
-            node.parent.right = nxt
+        correctly_setup_children(node, nxt)
 
 
 def a_tree():
